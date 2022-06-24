@@ -1,0 +1,15 @@
+
+
+message Hello{
+  string Name = 1;
+}
+{
+"name": "<service>",
+    "applicationGroup": "<applicationGroup>",
+    "runningPodsCount": 1
+    },
+message HelloResponse{}
+
+service HelloWorldHandler {
+  rpc SayHello(Hello) returns (HelloResponse){}
+}
