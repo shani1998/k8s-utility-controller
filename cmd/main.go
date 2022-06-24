@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"math/rand"
+	"net"
 	"net/http"
 	"os"
 	"os/signal"
@@ -12,11 +13,18 @@ import (
 	"github.com/julienschmidt/httprouter"
 	"github.com/shani1998/k8s-utility-controller/handlers"
 	log "github.com/sirupsen/logrus"
+	"github.com/spf13/pflag"
+	"github.com/spf13/viper"
 )
+
+func init() {
+	pflag.Parse()
+	_ = viper.BindPFlags(pflag.CommandLine)
+}
 
 func main() {
 	// retry until we initialize the kube client successfully
-	// using service token of pod.
+	// using either inCluster or outCluster config.
 	for handlers.InitKubeClient() != nil {
 		// Wait for 30s to 1m before making a request to api server
 		jitter := time.Duration(rand.Intn(30*1000)) * time.Millisecond
@@ -32,29 +40,27 @@ func main() {
 	// get services by application group
 	router.GET("/services/:applicationGroup", handlers.GetServicesByAppLabel)
 
-	doneC := make(chan os.Signal, 1)
-	signal.Notify(doneC, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
 	srv := &http.Server{
-		Addr:    ":8080",
+		Addr:    net.JoinHostPort(viper.GetString("server.host"), viper.GetString("server.port")),
 		Handler: router,
 	}
-
 	go func() {
 		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-			log.Fatalf("listen: %s\n", err)
+			log.Fatalf("error while servingon %v", err)
 		}
 	}()
+	log.Infof("started server on address %s", srv.Addr)
 
-	log.Infof("Server Started")
-
-	<-doneC
-	log.Infof("Server Stopped")
+	// accepts os Interrupt signal to shut down server gracefully
+	doneC := make(chan os.Signal, 1)
+	signal.Notify(doneC, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
+	log.Infof("received signal %v", <-doneC)
 
 	// shut down http server gracefully
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 	if err := srv.Shutdown(ctx); err != nil {
-		log.Fatalf("Server Shutdown Failed:%+v", err)
+		log.Fatalf("graceful server shutdown failed: %v", err)
 	}
-	log.Infof("Server Exited Properly")
+	log.Infof("gracefully stopped server listening on %s", srv.Addr)
 }
