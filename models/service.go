@@ -1,11 +1,12 @@
 package models
 
-// Service to expose data about pods
+// Service model to expose the information
+// about application running on cluster.
 type Service struct {
-	// the pod of Name
-	Name string `json:"name"`
-	// the pod belongs to which ApplicationGroup label
-	ApplicationGroup string `json:"applicationGroup"`
-	// total number of running pod in given configuration
-	RunningPodsCount int `json:"runningPodsCount"`
+	// the deployment of Name
+	Name string `json:"name,omitempty"`
+	// the deployment belongs to which ApplicationGroup label
+	ApplicationGroup string `json:"applicationGroup,omitempty"`
+	// total number of running pod corresponding to serviceName
+	RunningPodsCount int `json:"runningPodsCount,omitempty"`
 }
