@@ -66,11 +66,6 @@ $ make docker-build
 $ make docker-push
 ```
 
-To run locally
-```sh
-$ make run-local
-```
-
 To run and test locally
 ```sh
 $ make run-local #kubeconfig file should present at ~/.kube/config
