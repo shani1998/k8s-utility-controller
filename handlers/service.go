@@ -53,14 +53,14 @@ func GetServices(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	deployments, err := ListDeployments(r.Context(), metav1.ListOptions{})
 	if err != nil {
 		log.Errorf("error listing deployments %v", err)
-		responseWriter(w, []byte("unable to fetch services"), http.StatusServiceUnavailable)
+		responseWriter(w, []byte("failed to list services"), http.StatusServiceUnavailable)
 	}
 
 	// prepare response with fetched services
 	respBytes, err := getResponseBytes(deployments)
 	if err != nil {
 		log.Errorf("error marshaling response %v", err)
-		responseWriter(w, []byte("failed to encode response"), http.StatusServiceUnavailable)
+		responseWriter(w, []byte("failed to list services"), http.StatusServiceUnavailable)
 	}
 
 	responseWriter(w, respBytes, http.StatusOK)
@@ -77,14 +77,14 @@ func GetServicesByAppLabel(w http.ResponseWriter, r *http.Request, params httpro
 	deployments, err := ListDeployments(r.Context(), listOptions)
 	if err != nil {
 		log.Errorf("error listing deployments %v", err)
-		responseWriter(w, []byte("unable to fetch services"), http.StatusServiceUnavailable)
+		responseWriter(w, []byte("failed to list services"), http.StatusServiceUnavailable)
 	}
 
 	// prepare response with fetched services
 	respBytes, err := getResponseBytes(deployments)
 	if err != nil {
 		log.Errorf("error marshaling response %v", err)
-		responseWriter(w, []byte("failed to encode response"), http.StatusServiceUnavailable)
+		responseWriter(w, []byte("failed to list services"), http.StatusServiceUnavailable)
 	}
 
 	responseWriter(w, respBytes, http.StatusOK)

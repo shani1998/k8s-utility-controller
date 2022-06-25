@@ -57,10 +57,10 @@ func getOutClusterConfig() (*rest.Config, error) {
 	return clientcmd.BuildConfigFromFlags("", *kubeconfig)
 }
 
+// ListDeployments makes kube client call to fetch the deployments based on given opts
 func ListDeployments(ctx context.Context, opts metav1.ListOptions) (*appv1.DeploymentList, error) {
 	log.Infof("fetching list of deployments with label %s", opts.LabelSelector)
 	listDeployCtx, cancel := context.WithTimeout(ctx, 30*time.Second)
 	defer cancel()
 	return kubeClient.AppsV1().Deployments(defaultNS).List(listDeployCtx, opts)
-
 }

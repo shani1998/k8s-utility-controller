@@ -1,4 +1,4 @@
-#  go mod vendor;
+
 .PHONY: vendor
 vendor:
 	@export GO111MODULE=on; go mod tidy; go mod vendor;unset GO111MODULE
@@ -7,3 +7,4 @@ vendor:
 test:
 	@go vet ./...
 	@go test ./...
+
