@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: k8s-utility-controller
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: k8s-utility-controller
+rules:
+  - apiGroups: ["","apps"]
+    resources: ["deployments"]
+    verbs: ["list"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: k8s-utility-controller
+subjects:
+  - kind: ServiceAccount
+    name: k8s-utility-controller
+roleRef:
+  kind: Role
+  name: k8s-utility-controller
+  apiGroup: rbac.authorization.k8s.io

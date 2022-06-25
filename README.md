@@ -66,3 +66,24 @@ $ make docker-build
 $ make docker-push
 ```
 
+To run locally
+```sh
+$ make run-local
+```
+
+To run and test locally
+```sh
+$ make run-local #kubeconfig file should present at ~/.kube/config
+$ curl localhost:8080/services
+$ curl localhost:8080/services/alpha
+```
+
+To deploy in kubernetes cluster and test
+```sh
+$ k apply -f deploy/
+$ curl <Node-IP>:<NODE-PORT>/services
+$ curl <Node-IP>:<NODE-PORT>/services/alpha
+# grep NodePort using
+# kubectl get service  k8s-utility-controller -oyaml | grep -i nodeport
+# check the nodeIP where pod deployed 
+```
