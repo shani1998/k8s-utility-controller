@@ -20,7 +20,6 @@ const (
 var HealthChan = make(chan error)
 
 func responseWriter(w http.ResponseWriter, respBytes []byte, code int) {
-	log.Infoln(string(respBytes), code)
 	w.WriteHeader(code)
 	_, err := w.Write(respBytes)
 	if err != nil {

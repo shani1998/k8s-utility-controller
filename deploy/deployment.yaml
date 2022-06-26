@@ -20,6 +20,7 @@ spec:
       - image: skp123/k8s-utility-controller:v0.0.1
         args:
         - --log.level=debug
+        - --server.host=0.0.0.0
         imagePullPolicy: Always
         name: k8s-util
         ports:

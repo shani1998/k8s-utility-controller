@@ -80,5 +80,5 @@ $ curl <Node-IP>:<NODE-PORT>/services
 $ curl <Node-IP>:<NODE-PORT>/services/alpha
 # grep NodePort using
 # kubectl get service  k8s-utility-controller -oyaml | grep -i nodeport
-# check the nodeIP where pod deployed 
+# get the nodeIP where pod deployed
 ```
