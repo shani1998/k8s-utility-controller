@@ -1,5 +1,6 @@
 # k8s-utility-controller
-> This repository implements the rest endpoints to fetch all apps deployed as a deployment object on the current k8s cluster.
+> This repository implements the rest endpoints to fetch all apps deployed as a deployment object on the current k8s cluster. <br>
+> Exposed endpoints only return three fields: `name` of the app, `applicationGroup` it belongs to and how many corresponding `pods` are in healthy state.
 ### API
 #### /services
 * `GET` : Get all services contains number of pods running in the cluster in namespace default per service and per application group.
