@@ -18,10 +18,16 @@ spec:
       serviceAccountName: k8s-utility-controller
       containers:
       - image: skp123/k8s-utility-controller:v0.0.1
+        args:
+        - --log.level=debug
         imagePullPolicy: Always
         name: k8s-util
         ports:
         - containerPort: 8080
           protocol: TCP
           name: http
+        readinessProbe:
+          httpGet:
+            path: "/healthz"
+            port: 8089
       restartPolicy: Always

@@ -20,9 +20,18 @@ import (
 func init() {
 	pflag.Parse()
 	_ = viper.BindPFlags(pflag.CommandLine)
+
+	initializeLogger(viper.GetString("log.format"), viper.GetString("log.level"))
 }
 
 func main() {
+	// setup check endpoint to monitor the health of the controller,
+	// it becomes unhealthy if at all any error occurs while serving requests
+	if viper.GetBool("healthz.enable") {
+		go updateHealthStatus()
+		go healthz(viper.GetString("healthz.host"), viper.GetString("healthz.port"))
+	}
+
 	// retry until we initialize the kube client successfully
 	// using either inCluster or outCluster config.
 	for handlers.InitKubeClient() != nil {

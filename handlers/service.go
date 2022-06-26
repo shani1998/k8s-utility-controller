@@ -17,13 +17,22 @@ const (
 	appGroup  = "applicationGroup"
 )
 
+var HealthChan = make(chan error)
+
 func responseWriter(w http.ResponseWriter, respBytes []byte, code int) {
+	log.Infoln(string(respBytes), code)
 	w.WriteHeader(code)
 	_, err := w.Write(respBytes)
 	if err != nil {
 		log.Errorf("failed to write response %v", err)
 	}
-	return
+	if code == http.StatusOK {
+		//clear the error from the healthCheck variable
+		HealthChan <- nil
+	} else {
+		// update health if response is not success
+		HealthChan <- fmt.Errorf("%s", respBytes)
+	}
 }
 
 func getResponseBytes(deployments *appv1.DeploymentList) ([]byte, error) {
@@ -54,6 +63,7 @@ func GetServices(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	if err != nil {
 		log.Errorf("error listing deployments %v", err)
 		responseWriter(w, []byte("failed to list services"), http.StatusServiceUnavailable)
+		return
 	}
 
 	// prepare response with fetched services
@@ -61,6 +71,7 @@ func GetServices(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	if err != nil {
 		log.Errorf("error marshaling response %v", err)
 		responseWriter(w, []byte("failed to list services"), http.StatusServiceUnavailable)
+		return
 	}
 
 	responseWriter(w, respBytes, http.StatusOK)
@@ -78,6 +89,7 @@ func GetServicesByAppLabel(w http.ResponseWriter, r *http.Request, params httpro
 	if err != nil {
 		log.Errorf("error listing deployments %v", err)
 		responseWriter(w, []byte("failed to list services"), http.StatusServiceUnavailable)
+		return
 	}
 
 	// prepare response with fetched services
@@ -85,6 +97,7 @@ func GetServicesByAppLabel(w http.ResponseWriter, r *http.Request, params httpro
 	if err != nil {
 		log.Errorf("error marshaling response %v", err)
 		responseWriter(w, []byte("failed to list services"), http.StatusServiceUnavailable)
+		return
 	}
 
 	responseWriter(w, respBytes, http.StatusOK)
