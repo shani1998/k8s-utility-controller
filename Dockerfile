@@ -9,5 +9,4 @@ FROM alpine:latest as runner
 RUN apk --no-cache add curl
 WORKDIR /bin
 COPY --from=builder ["/go/src/github.com/shani1998/k8s-utility-controller/bin", "./"]
-RUN ls -lart
 ENTRYPOINT ["server"]

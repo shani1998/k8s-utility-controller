@@ -20,6 +20,7 @@ const (
 var HealthChan = make(chan error)
 
 func responseWriter(w http.ResponseWriter, respBytes []byte, code int) {
+	w.Header().Set("content-type", "application/json")
 	w.WriteHeader(code)
 	_, err := w.Write(respBytes)
 	if err != nil {

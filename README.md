@@ -76,6 +76,7 @@ $ curl localhost:8080/services/alpha
 
 To deploy in kubernetes cluster and test
 ```sh
+$ cd k8s-utility-controller/
 $ k apply -f deploy/
 $ curl <Node-IP>:<NODE-PORT>/services
 $ curl <Node-IP>:<NODE-PORT>/services/alpha

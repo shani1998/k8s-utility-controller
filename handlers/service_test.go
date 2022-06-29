@@ -23,6 +23,12 @@ func TestGetServices(t *testing.T) {
 	// create the fake client.
 	kubeClient = fake.NewSimpleClientset()
 	req := httptest.NewRequest("GET", "http://test-service.com/services", nil)
+	go func() {
+		for {
+			// consume test errors
+			<-HealthChan
+		}
+	}()
 
 	tests := []struct {
 		name     string
@@ -62,7 +68,7 @@ func TestGetServices(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			//prepare test scenario
+			// prepare test scenario
 			if strings.Contains(tt.name, "Failure") {
 				// return a fake error getting the deployment  list
 				kubeClient.(*fake.Clientset).Fake.PrependReactor("list", "deployments", errorReaction)
@@ -115,6 +121,12 @@ func TestGetServicesByAppLabel(t *testing.T) {
 	kubeClient = fake.NewSimpleClientset()
 	req := httptest.NewRequest("GET", "http://test.service.com/services/invalid<label>", nil)
 	testParams := httprouter.Params{httprouter.Param{Key: appGroup, Value: "alpha"}}
+	go func() {
+		for {
+			// consume test errors
+			<-HealthChan
+		}
+	}()
 
 	tests := []struct {
 		name     string
