@@ -51,13 +51,13 @@ jobs:
           go tool cover -func=coverage.out
 
       # Upload test coverage report (optional)
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v4
-        with:
-          file: ./coverage.out
-          flags: unittests
-          name: codecov-umbrella
-          fail_ci_if_error: true
+#      - name: Upload coverage to Codecov
+#        uses: codecov/codecov-action@v4
+#        with:
+#          file: ./coverage.out
+#          flags: unittests
+#          name: codecov-umbrella
+#          fail_ci_if_error: true
 
       # Build the project
       - name: Build the project
